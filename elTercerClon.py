@@ -56,8 +56,62 @@ def imprimirtablero(matrix):
             print("+-" * n + "+")
 
     print("MOVIMIENTOS = %s |   PUNTUACIÓN = %s" % (str(movimientos), str(puntuacion)))
+    enter = False
+    jugada=""
+    # Entrada de jugadas
+    while jugada == "":
+        jugada=input("[S]ubir, [B]ajar, [I]zda, [D]cha | [M]odo, [G]uardar, [F]in: ")
+        if(validajugada(jugada)==False):
+            print("Entrada no valida")
+            jugada == ""
+    Jugadas(jugada)
+    if input("Pulse cualquier tecla para mostrar inserción del nuevo bloque")=="":
+        enter=True
+    if enter:
+        print("f")
     return None
 
+# Jugadas del tablero
+def subir():
+    return "elegiste subir"
+def bajar():
+    return "elegiste bajar"
+def izda():
+    return "elegiste izquierda"
+def dcha():
+    return "elegiste derecha"
+def modo():
+    return "elegiste modo"
+def guardar():
+    return "elegiste guardar"
+def fin():
+    return "elegiste fin"
+
+def Jugadas(jugad):
+    jugad = jugad.upper()
+    funcion = " "
+    opciones = {
+        "S": subir,
+        "B": bajar,
+        "I": izda,
+        "D": dcha,
+        "M": modo,
+        "G": guardar,
+        "F": fin
+    }
+    funcion = opciones.get(jugad, "No existe")
+    print(funcion())
+
+# Validar la entrada
+def validajugada(jug):
+    jug=jug.upper()
+    lista = ["S", "B", "I", "D", "M", "G", "F"]
+    i = 0
+    for i in range(len(lista)):
+        if jug == lista[i]:
+            return True
+        i += 1
+    return False
 
 def crearobstaculos(m):
     obstaculos = 0
@@ -102,12 +156,7 @@ elif opcion == 2:
 elif opcion == 3:
     exit()
 
-movimientos = {
-    "S": "Subir",
-    "B": "Bjar",
-    "I": "zda",
-    "D": "cha"
-}
+
 
 
 def pedirdatos():
