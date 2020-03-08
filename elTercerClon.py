@@ -2,6 +2,7 @@
 import random
 import os.path
 
+mod = 1
 nivel = range(1, 12)
 
 print("‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐  CLON‐3  ‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐")
@@ -9,7 +10,7 @@ print("‐ Práctica de Paradigmas de Programación 2019‐20 ‐")
 print("‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐ ")
 
 opciones = ("CREAR NUEVO TABLERO", "LEER TABLERO DE FICHERO", "SALIR")
-
+jugadas = ("Alfabeto", "Nivel", "1024", "2048")
 # Impresión de opciones
 for i in range(len(opciones)):
     print("%d. %s" % (i + 1, opciones[i]))
@@ -73,19 +74,24 @@ def imprimirtablero(matrix):
 
 # Jugadas del tablero
 def subir():
-    return "elegiste subir"
+    print("elegiste subir")
 def bajar():
-    return "elegiste bajar"
+    print("elegiste bajar")
 def izda():
-    return "elegiste izquierda"
+    print("elegiste izquierda")
 def dcha():
-    return "elegiste derecha"
+    print("elegiste derecha")
 def modo():
-    return "elegiste modo"
+   # return "elegiste modo"
+    print("ESCOJA MODO DE VISUALIZACION: \n")
+    for i in range(len(jugadas)):
+        print("%d. %s" % (i + 1, jugadas[i]))
+    mod = input("\n Escoja opcion: ")
+
 def guardar():
-    return "elegiste guardar"
+    print("elegiste guardar")
 def fin():
-    return "elegiste fin"
+    print("elegiste fin")
 
 def Jugadas(jugad):
     jugad = jugad.upper()
@@ -100,7 +106,7 @@ def Jugadas(jugad):
         "F": fin
     }
     funcion = opciones.get(jugad, "No existe")
-    print(funcion())
+    funcion()
 
 # Validar la entrada
 def validajugada(jug):
