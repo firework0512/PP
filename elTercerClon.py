@@ -2,7 +2,7 @@
 import random
 import os.path
 
-mod = 1
+mod = 3
 nivel = range(1, 12)
 
 print("‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐  CLON‐3  ‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐")
@@ -44,17 +44,8 @@ def numeroaletorio(origin, bound, step=1):
 
 
 def imprimirtablero(matrix):
-    for fila in range(len(matrix)):
-        print("+-" * n + "+")
-        for columna in range(len(matrix[0])):
-            if columna == 0:
-                print("|%s" % str(matriz[fila][columna]), end="|")
-            elif columna == n - 1:
-                print("%s|" % str(matriz[fila][columna]))
-            else:
-                print(str(matriz[fila][columna]), end="|")
-        if fila == n - 1:
-            print("+-" * n + "+")
+
+    Tablero(mod, matrix)
 
     print("MOVIMIENTOS = %s |   PUNTUACIÓN = %s" % (str(movimientos), str(puntuacion)))
     enter = False
@@ -108,6 +99,65 @@ def Jugadas(jugad):
     funcion = opciones.get(jugad, "No existe")
     funcion()
 
+# Modos de juego
+def Tab1(matrix):
+    for fila in range (len (matrix)):
+        print ("+-" * n + "+")
+        for columna in range (len (matrix[0])):
+            if columna == 0:
+                print ("|%s" % str (matriz[fila][columna]), end="|")
+            elif columna == n - 1:
+                print ("%s|" % str (matriz[fila][columna]))
+            else:
+                print (str (matriz[fila][columna]), end="|")
+        if fila == n - 1:
+            print ("+-" * n + "+")
+def Tab2(matrix):
+    for fila in range (len (matrix)):
+        print ("+--" * n + "+")
+        for columna in range (len (matrix[0])):
+            if columna == 0:
+                print ("|%s" % str (matriz[fila][columna]), end="")
+                print ("%s" % str (matriz[fila][columna]), end="|")
+            elif columna == n - 1:
+                print ("%s" % str (matriz[fila][columna]), end="")
+                print ("%s|" % str (matriz[fila][columna]))
+            else:
+                print (str (matriz[fila][columna]), end="")
+                print (str (matriz[fila][columna]), end="|")
+        if fila == n - 1:
+            print ("+--" * n + "+")
+def Tab3(matrix):
+    for fila in range (len (matrix)):
+        print ("+----" * n + "+")
+        for columna in range (len (matrix[0])):
+            if columna == 0:
+                print ("|%s" % str (matriz[fila][columna]), end="")
+                print ("%s" % str (matriz[fila][columna]), end="")
+                print ("%s" % str (matriz[fila][columna]), end="")
+                print ("%s" % str (matriz[fila][columna]), end="|")
+            elif columna == n - 1:
+                print ("%s" % str (matriz[fila][columna]), end="")
+                print ("%s" % str (matriz[fila][columna]), end="")
+                print ("%s" % str (matriz[fila][columna]), end="")
+                print ("%s|" % str (matriz[fila][columna]))
+            else:
+                print (str (matriz[fila][columna]), end="")
+                print (str (matriz[fila][columna]), end="")
+                print (str (matriz[fila][columna]), end="")
+                print (str (matriz[fila][columna]), end="|")
+        if fila == n - 1:
+            print ("+----" * n + "+")
+
+def Tablero(modo, matrix):
+    Tabl = {
+        1 : Tab1,
+        2 : Tab2,
+        3 : Tab3,
+        4 : Tab3
+    }
+    func = Tabl.get(modo, "Ese modo no existe")
+    func(matrix)
 # Validar la entrada
 def validajugada(jug):
     jug=jug.upper()
@@ -120,7 +170,7 @@ def validajugada(jug):
     return False
 
 def crearobstaculos(m):
-    obstaculos = 0
+    obstaculos=0
     while True:
         aleatoriofila = numeroaletorio(0, n)
         aleatoriocolumna = numeroaletorio(0, n)
@@ -149,6 +199,7 @@ if opcion == 1:
     # Creación de obstaculos
     crearobstaculos(m)
     # Imprimimos el tablero
+
     imprimirtablero(matriz)
 elif opcion == 2:
     while True:
