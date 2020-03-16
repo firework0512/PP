@@ -3,6 +3,7 @@ import random
 import os.path
 
 mod = 1
+global fil
 nivel = range (1, 12)
 
 print ("‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐  CLON‐3  ‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐")
@@ -67,9 +68,18 @@ def bajar():
 
 
 def izda():
-    print ("elegiste izquierda")
-
-
+    fil=""
+    for i in range(len(matriz)):
+        for j in range(len(matriz[i])):
+            if matriz[i][j] != "|":
+                fil = fil + matriz[i][j]
+            j += 1
+        fila = desplaz(fil)
+        fil=""
+        for j in range(len(matriz[i])):
+            matriz[i][j] = fila[j]
+            j += 1
+        i += 1
 def dcha():
     print ("elegiste derecha")
 
@@ -87,11 +97,13 @@ def modo():
 def guardar():
     ruta = str(input ("Indique la ruta de guardado: "))
     fichero = open (ruta, "a")
+    fichero.write(str(mod))
     fichero.write ("\n")
     fichero.write (str (movimientos))
     fichero.write ("\n")
     fichero.write (str (puntuacion))
     fichero.write ("\n")
+
     for i in range(len(matriz)):
         for j in range(len(matriz[i])):
             if matriz[i][j]=="+":
@@ -103,7 +115,7 @@ def guardar():
                 j+=1
             else:
                 fichero.write(matriz[i][j])
-                j=+1
+                j+=1
         fichero.write("\n")
         i+=1
 
@@ -235,6 +247,21 @@ def posiblejugada(matriz):
         i += 1
     return False
 
+def desplaz(fila):
+    fi=""
+    for i in range(len(fila)):
+        if fila[i] == " ":
+            for j in range(len(fila)):
+                if fila[j] != " ":
+                    fi = fi + fila[j]
+                j +=1
+            if len(fila) != len(fi):
+                for k in range((len(fila))-len(fi)):
+                    fi = fi + " "
+                    k += 1
+            return fi
+            i+=1
+    return fila
 
 # Contenido del archivo leido
 contenido = ""
@@ -264,6 +291,8 @@ elif opcion == 2:
     fichero.close ()
 elif opcion == 3:
     exit ()
+
+
 
 
 def pedirdatos():
