@@ -252,7 +252,14 @@ def desplaz(fila):
     for i in range(len(fila)):
         if fila[i] == " ":
             for j in range(len(fila)):
-                if fila[j] != " ":
+                if fila[j] == "*":
+                    if len(fi)!=j-1:
+                        k = j-len(fi)-1
+                        while k >= 0:
+                            fi = fi + " "
+                            k -= 1
+                    fi = fi + "*"
+                elif fila[j] != " ":
                     fi = fi + fila[j]
                 j +=1
             if len(fila) != len(fi):
