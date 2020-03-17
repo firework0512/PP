@@ -81,7 +81,19 @@ def izda():
             j += 1
         i += 1
 def dcha():
-    print ("elegiste derecha")
+    fil = ""
+    for i in range(len(matriz)):
+        for j in range(len(matriz[i])):
+            if matriz[i][len(matriz)-j-1] != "|":
+                fil = fil + matriz[i][len(matriz)-j-1]
+            j += 1
+        fila = desplaz(fil)
+        fil=""
+        for j in range(len(matriz[i])):
+            matriz[i][len(matriz)-j-1] = fila[j]
+            j += 1
+        i += 1
+
 
 
 def modo():
