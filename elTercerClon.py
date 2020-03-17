@@ -60,13 +60,33 @@ def imprimirtablero(matrix):
 
 # Jugadas del tablero
 def subir():
-    print ("elegiste subir")
+    fil = ""
+    for i in range (len (matriz)):
+        for j in range (len (matriz[i])):
+            if matriz[j][i] != "|":
+                fil = fil + matriz[j][i]
+            j += 1
+        fila = desplaz (fil)
+        fil = ""
+        for j in range (len (matriz[i])):
+            matriz[j][i] = fila[j]
+            j += 1
+        i += 1
 
 
 def bajar():
-    print ("elegiste bajar")
-
-
+    fil = ""
+    for i in range(len(matriz)):
+        for j in range(len(matriz[i])):
+            if matriz[len(matriz)-j-1][i] != "|":
+                fil = fil + matriz[len(matriz)-j-1][i]
+            j += 1
+        fila = desplaz(fil)
+        fil=""
+        for j in range(len(matriz[i])):
+            matriz[len(matriz)-j-1][i] = fila[j]
+            j += 1
+        i += 1
 def izda():
     fil=""
     for i in range(len(matriz)):
