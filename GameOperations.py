@@ -108,12 +108,13 @@ def transform_operation(word):
 
 def do_pie_operation(operation, game_config):
     direction_operations = ("S", "B", "I", "D")
+
     if direction_operations.__contains__(operation):
         game_operation = transform_operation(operation)
         matrix = game_config.get_matrix()
-        do_matrix_operation(matrix, game_operation)
+        do_matrix_operation(game_operation, game_config)
         print_matrix(matrix, game_config.get_matrix_size())
-        enter = input("Pulse cualquier tecla para mostrar inserción del nuevo bloque") == ""
+        input("Pulse cualquier tecla para mostrar inserción del nuevo bloque")
         insert_new_block(matrix, game_config.get_mode())
         # Incrementamos una unidad el número de movimientos
         game_config.set_moves(game_config.get_moves() + 1)
@@ -123,6 +124,9 @@ def do_pie_operation(operation, game_config):
         change_mode()
     elif operation == "G":
         save()
+    elif operation == "Z":
+        input("Pulse cualquier tecla para mostrar inserción del nuevo bloque")
+        insert_new_block(game_config.get_matrix(), game_config.get_mode())
         return None
 
 
@@ -137,16 +141,17 @@ def convert_column_to_string(matrix, column):
     return column_word
 
 
-def do_matrix_operation(matrix, operation):
+def do_matrix_operation(operation, game_config):
+    matrix = game_config.get_matrix()
     if operation in [GameMovements.DOWN, GameMovements.UP]:
         for i in range(len(matrix[0])):
             column_word = convert_column_to_string(matrix, i)
-            column_word = get_merged_word(column_word, operation)
+            column_word = get_merged_word(column_word, operation, game_config)
             insert_column_word(matrix, column_word, i)
     elif operation in [GameMovements.LEFT, GameMovements.RIGHT]:
-        for i in range(len(matrix[0])):
+        for i in range(len(matrix)):
             row_word = convert_row_to_string(matrix, i)
-            row_word = get_merged_word(row_word, operation)
+            row_word = get_merged_word(row_word, operation, game_config)
             insert_row_word(matrix, row_word, i)
     return None
 
@@ -163,7 +168,7 @@ def insert_column_word(matrix, word, index):
     return None
 
 
-def get_merged_word(word, operation):
+def get_merged_word(word, operation, game_config):
     # obstacles_positions = ([pos for pos, char in enumerate(columnword) if char == "*"])
     test = word.split("*")
     replaced = list(map(lambda y: (y.count(" "), y.replace(" ", "")), test))
@@ -181,7 +186,7 @@ def get_merged_word(word, operation):
         value = reversed_replaced[i]
         if len(value) > 1:
             spaces = value.count(" ")
-            value = " " * spaces + merge(value, reverse)
+            value = " " * spaces + merge(value, game_config, reverse)
             reversed_replaced[i] = value
 
     if reverse:
@@ -192,7 +197,7 @@ def get_merged_word(word, operation):
     return replaced
 
 
-def merge(word, reverse=False):
+def merge(word, game_config, reverse=False):
     chars = list(word)
     last_merged_index = -1
     last_word = ""
@@ -202,7 +207,10 @@ def merge(word, reverse=False):
         if last_word == value:
             if last_merged_index != index - 1:
                 chars[index - 1] = ""
-                next_char = chr(ord(value) + 1)
+                next_value_ascii = ord(value) + 1
+                next_char = chr(next_value_ascii)
+                level = next_value_ascii - ord('@')
+                game_config.set_record(game_config.get_record() + level)
                 chars[index] = next_char
                 last_merged_index = index
                 value = next_char

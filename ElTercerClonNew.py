@@ -14,6 +14,9 @@ print("‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐�
 # Configuración del juego
 game_config = GameConfig()
 
+# Pie
+pie = "[S]ubir, [B]ajar, [I]zda, [D]cha | [M]odo, [G]uardar, [F]in: "
+
 
 # Funciones del menu principal
 def new_matrix():
@@ -21,13 +24,12 @@ def new_matrix():
     matrix_size = int(input("Introduzca el tamaño de la matríz: "))
     game_config.set_matrix_size(matrix_size)
     obstacles = int(input("Introduzca el número de obstáculos: "))
-
     while obstacles > matrix_size * matrix_size:
         print("No caben tantos obstáculos en la matriz")
         obstacles = int(input("Introduzca el número de obstáculos: "))
-
     game_config.set_obstacles(obstacles)
     matrix = game_config.get_matrix()
+    is_first_entry = True
     # Creamos los obstáculos
     create_random_obstacles(matrix, obstacles)
     # Comprobamos que se puede realizar el movimiento
@@ -36,12 +38,16 @@ def new_matrix():
         print_matrix(matrix, game_config.get_matrix_size())
         # Imprimimos el pie
         print("MOVIMIENTOS = %s |   PUNTUACIÓN = %s" % (str(game_config.get_moves()), str(game_config.get_record())))
-        pie_selected_option = ""
-        # Pedimos la opción del pie elegida por el jugador
-        while pie_selected_option == "":
-            pie_selected_option = input("[S]ubir, [B]ajar, [I]zda, [D]cha | [M]odo, [G]uardar, [F]in: ")
-            # Realizamos la operacion seleccionada por el jugador
-            do_pie_operation(pie_selected_option.upper(), game_config)
+        if is_first_entry:
+            do_pie_operation("Z", game_config)
+            is_first_entry = False
+        else:
+            pie_selected_option = ""
+            # Pedimos la opción del pie elegida por el jugador
+            while pie_selected_option == "":
+                pie_selected_option = input(pie)
+                # Realizamos la operacion seleccionada por el jugador
+                do_pie_operation(pie_selected_option.upper(), game_config)
     print_matrix(matrix, game_config.get_matrix_size())
     print("HAS PERDIDO")
     return None
