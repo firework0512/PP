@@ -46,7 +46,7 @@ class GameConfig:
         return None
 
     def get_record(self):
-        return self.__moves
+        return self.__record
 
     def set_record(self, new_value):
         self.__record = new_value

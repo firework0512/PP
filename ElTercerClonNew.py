@@ -41,7 +41,7 @@ def new_matrix():
         while pie_selected_option == "":
             pie_selected_option = input("[S]ubir, [B]ajar, [I]zda, [D]cha | [M]odo, [G]uardar, [F]in: ")
             # Realizamos la operacion seleccionada por el jugador
-            do_pie_operation(pie_selected_option.upper(), matrix, matrix_size, game_config.get_mode())
+            do_pie_operation(pie_selected_option.upper(), game_config)
     print_matrix(matrix, game_config.get_matrix_size())
     print("HAS PERDIDO")
     return None

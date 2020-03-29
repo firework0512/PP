@@ -106,14 +106,17 @@ def transform_operation(word):
     return operation_dict[word]
 
 
-def do_pie_operation(operation, matrix, matrix_size, game_mode):
+def do_pie_operation(operation, game_config):
     direction_operations = ("S", "B", "I", "D")
     if direction_operations.__contains__(operation):
         game_operation = transform_operation(operation)
+        matrix = game_config.get_matrix()
         do_matrix_operation(matrix, game_operation)
-        print_matrix(matrix, matrix_size)
+        print_matrix(matrix, game_config.get_matrix_size())
         enter = input("Pulse cualquier tecla para mostrar inserción del nuevo bloque") == ""
-        insert_new_block(matrix, game_mode)
+        insert_new_block(matrix, game_config.get_mode())
+        # Incrementamos una unidad el número de movimientos
+        game_config.set_moves(game_config.get_moves() + 1)
     elif operation == "F":
         exit(0)
     elif operation == "M":
