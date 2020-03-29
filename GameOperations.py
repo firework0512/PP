@@ -2,7 +2,7 @@ import random
 
 from functools import reduce
 
-from GameConfig import GameModes
+from GameConfig import GameModes, GameMovements
 
 
 def create_random_obstacles(matrix, n):
@@ -32,7 +32,7 @@ def random_empty_space_position(matrix):
     row, columns = random.choice(list(filtered.items()))
     _random_number = random_number(0, len(columns))
     column = columns[_random_number]
-    print("row : " + str(row) + " column : " + str(column))
+    # print("row : " + str(row) + " column : " + str(column))
     return row, column
 
 
@@ -85,6 +85,7 @@ def print_matrix(matrix, n):
                 print(str(matrix[fila][columna]), end="|")
         if fila == n - 1:
             print("+-" * n + "+")
+    return None
 
 
 def change_mode():
@@ -95,10 +96,21 @@ def save():
     pass
 
 
+def transform_operation(word):
+    operation_dict = {
+        "S": GameMovements.UP,
+        "B": GameMovements.DOWN,
+        "I": GameMovements.LEFT,
+        "D": GameMovements.RIGHT
+    }
+    return operation_dict[word]
+
+
 def do_pie_operation(operation, matrix, matrix_size, game_mode):
-    matrix_operations = ("S", "B", "I", "D")
-    if matrix_operations.__contains__(operation):
-        do_matrix_operation(matrix, operation)
+    direction_operations = ("S", "B", "I", "D")
+    if direction_operations.__contains__(operation):
+        game_operation = transform_operation(operation)
+        do_matrix_operation(matrix, game_operation)
         print_matrix(matrix, matrix_size)
         enter = input("Pulse cualquier tecla para mostrar inserción del nuevo bloque") == ""
         insert_new_block(matrix, game_mode)
@@ -112,7 +124,7 @@ def do_pie_operation(operation, matrix, matrix_size, game_mode):
 
 
 def convert_row_to_string(matrix, row):
-    return matrix[row]
+    return "".join(matrix[row])
 
 
 def convert_column_to_string(matrix, column):
@@ -123,15 +135,82 @@ def convert_column_to_string(matrix, column):
 
 
 def do_matrix_operation(matrix, operation):
-    if operation == "B":
-        for column in range(len(matrix[0])):
-            column_word = convert_column_to_string(matrix, column)
-            gravity(column_word)
+    if operation in [GameMovements.DOWN, GameMovements.UP]:
+        for i in range(len(matrix[0])):
+            column_word = convert_column_to_string(matrix, i)
+            column_word = get_merged_word(column_word, operation)
+            insert_column_word(matrix, column_word, i)
+    elif operation in [GameMovements.LEFT, GameMovements.RIGHT]:
+        for i in range(len(matrix[0])):
+            row_word = convert_row_to_string(matrix, i)
+            row_word = get_merged_word(row_word, operation)
+            insert_row_word(matrix, row_word, i)
     return None
 
 
-def gravity(column_word):
+def insert_row_word(matrix, word, index):
+    matrix[index] = list(word)
     return None
+
+
+def insert_column_word(matrix, word, index):
+    chars = list(word)
+    for row in range(len(matrix)):
+        matrix[row][index] = chars[row]
+    return None
+
+
+def get_merged_word(word, operation):
+    # obstacles_positions = ([pos for pos, char in enumerate(columnword) if char == "*"])
+    test = word.split("*")
+    replaced = list(map(lambda y: (y.count(" "), y.replace(" ", "")), test))
+    reversed_replaced = []
+    reverse = False
+    if operation in [GameMovements.DOWN, GameMovements.RIGHT]:
+        # Need reverse operation
+        reversed_replaced = list(map(lambda y: y[1][::-1], replaced))
+        reverse = True
+
+    elif operation in [GameMovements.UP, GameMovements.LEFT]:
+        reversed_replaced = list(map(lambda y: y[1], replaced))
+
+    for i in range(len(reversed_replaced)):
+        value = reversed_replaced[i]
+        if len(value) > 1:
+            spaces = value.count(" ")
+            value = " " * spaces + merge(value, reverse)
+            reversed_replaced[i] = value
+
+    if reverse:
+        replaced = list(map(lambda y, z: " " * y[0] + " " * (len(y[1]) - len(z)) + z, replaced, reversed_replaced))
+    else:
+        replaced = list(map(lambda y, z: z + " " * (len(y[1]) - len(z)) + " " * y[0], replaced, reversed_replaced))
+    replaced = "*".join(replaced)
+    return replaced
+
+
+def merge(word, reverse=False):
+    chars = list(word)
+    last_merged_index = -1
+    last_word = ""
+    index = 0
+    while True:
+        value = chars[index]
+        if last_word == value:
+            if last_merged_index != index - 1:
+                chars[index - 1] = ""
+                next_char = chr(ord(value) + 1)
+                chars[index] = next_char
+                last_merged_index = index
+                value = next_char
+        last_word = value
+        index += 1
+        if index == len(chars):
+            break
+    result = "".join(chars)
+    if reverse:
+        return result[::-1]
+    return result
 
 
 def random_number(origin, bound, step=1):
