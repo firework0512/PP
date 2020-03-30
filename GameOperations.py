@@ -182,11 +182,20 @@ def change_mode(game_config):
 
 
 def save(game_config):
+    """
+    Guardado de la partida
+    :param game_config: la configuración del juego
+    :return:
+    """
+    # Definimos variables temporales para utilizarlas posteriormente
     matrix = game_config.get_matrix()
     current_mode = game_config.get_mode ()
+    # Pregunta por pantalla la ruta de guardado
     path = str (input ("Indique la ruta de guardado: "))
     file = open (path, "a")
+    # Escribir el número de movimientos y la puntuacion
     file.writelines([str(game_config.get_moves()), "\n", str(game_config.get_record())])
+    # Iteracion por filas cambiando el modo de la matriz y escritura en el fichero
     for row in range(len(matrix)):
         file.write("\n")
         for column in range(len(matrix[0])):
@@ -194,13 +203,12 @@ def save(game_config):
             if value not in ["*", " "]:
                 new_value = convert_block_to_mode (value, current_mode, GameModes.ALPHA)
                 matrix[row][column] = new_value
-            if matrix[row][column] == " ":
+            # Comprobar si el bloque esta en blanco
+            if value == " ":
                 file.write(".")
             else:
-                file.write(matrix[row][column])
-            column += 1
-        row += 1
-
+                file.write(value)
+    file.close()
 
 
 def transform_operation(word):
