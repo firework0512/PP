@@ -35,7 +35,7 @@ def new_matrix():
     # Comprobamos que se puede realizar el movimiento
     while is_possible_move(matrix):
         # Imprimimos la matriz
-        print_matrix(matrix, game_config.get_matrix_size())
+        print_matrix(game_config)
         # Imprimimos el pie
         print("MOVIMIENTOS = %s |   PUNTUACIÓN = %s" % (str(game_config.get_moves()), str(game_config.get_record())))
         if is_first_entry:
@@ -43,12 +43,12 @@ def new_matrix():
             is_first_entry = False
         else:
             pie_selected_option = ""
-            # Pedimos la opción del pie elegida por el jugador
+            # Pedimos la opción del pie elegido por el jugador
             while pie_selected_option == "":
                 pie_selected_option = input(pie)
                 # Realizamos la operacion seleccionada por el jugador
                 do_pie_operation(pie_selected_option.upper(), game_config)
-    print_matrix(matrix, game_config.get_matrix_size())
+    print_matrix(game_config)
     print("HAS PERDIDO")
     return None
 

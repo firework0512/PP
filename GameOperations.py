@@ -1,5 +1,5 @@
 import random
-
+import math
 from functools import reduce
 
 from GameConfig import GameModes, GameMovements
@@ -46,12 +46,10 @@ def insert_new_block(matrix, game_mode):
     probability = (1, 1, 1, 2)
     level = probability[random_number(0, len(probability))]
     position = random_empty_space_position(matrix)
-    if level == 1:
-        if game_mode == GameModes.ALPHA:
-            matrix[position[0]][position[1]] = "A"
-    else:
-        if game_mode == GameModes.ALPHA:
-            matrix[position[0]][position[1]] = "B"
+    block = "A"
+    if level == 2:
+        block = "B"
+    matrix[position[0]][position[1]] = convert_block_to_mode(block, GameModes.ALPHA, game_mode)
     return None
 
 
@@ -73,23 +71,114 @@ def get_matrix_empty_spaces(matrix):
     return matrix_empty_spaces
 
 
-def print_matrix(matrix, n):
+def print_matrix(game_config):
+    matrix = game_config.get_matrix()
+    matrix_size = game_config.get_matrix_size()
+    current_mode = game_config.get_mode()
+    hypens = 1
+    if current_mode == GameModes.LEVEL:
+        hypens = 2
+    elif current_mode in [GameModes.A, GameModes.B]:
+        hypens = 4
+
     for fila in range(len(matrix)):
-        print("+-" * n + "+")
+        print(("+" + "-" * hypens) * matrix_size + "+")
         for columna in range(len(matrix[0])):
+            value = matrix[fila][columna]
+            if value == "*":
+                value = "*" * hypens
+            spaces = hypens - len(value)
             if columna == 0:
-                print("|%s" % str(matrix[fila][columna]), end="|")
-            elif columna == n - 1:
-                print("%s|" % str(matrix[fila][columna]))
+                print("|" + spaces * " " + "%s" % value, end="|")
+            elif columna == matrix_size - 1:
+                print(spaces * " " + "%s|" % value)
             else:
-                print(str(matrix[fila][columna]), end="|")
-        if fila == n - 1:
-            print("+-" * n + "+")
+                print(spaces * " " + value, end="|")
+        if fila == matrix_size - 1:
+            print(("+" + "-" * hypens) * matrix_size + "+")
     return None
 
 
-def change_mode():
-    pass
+def natural_logarithm(x):
+    """
+    Calcula el logaritmo neperiano de x
+    :param x: el numero deseado a calcular
+    :return: el logaritmo neperiano de x
+    """
+    return math.log(x, math.e)
+
+
+def convert_block_to_mode(block, current_mode, new_mode):
+    """
+    Convierte la letra de un bloque de un modo a otro modo
+    :param block: el bloque
+    :param current_mode: el modo al que le corresponde el bloque
+    :param new_mode: el nuevo modo
+    :return: la letra del bloque en el nuevo modo
+    """
+    if new_mode == GameModes.ALPHA:
+        if current_mode == GameModes.LEVEL:
+            return chr(ord("@") + int(block))
+        elif current_mode == GameModes.A:
+            return convert_block_to_mode(convert_block_to_mode(block, GameModes.A, GameModes.LEVEL), GameModes.LEVEL,
+                                         GameModes.ALPHA)
+        elif current_mode == GameModes.B:
+            return convert_block_to_mode(convert_block_to_mode(block, GameModes.B, GameModes.LEVEL), GameModes.LEVEL,
+                                         GameModes.ALPHA)
+    elif new_mode == GameModes.LEVEL:
+        if current_mode == GameModes.ALPHA:
+            return str(ord(block) - ord("@"))
+        elif current_mode == GameModes.A:
+            return str(int((natural_logarithm(int(block)) / natural_logarithm(2)) + 1))
+        elif current_mode == GameModes.B:
+            return str(int(natural_logarithm(int(block)) / natural_logarithm(2)))
+    elif new_mode == GameModes.A:
+        if current_mode == GameModes.ALPHA:
+            return str(2 ** (ord(block) - ord("@") - 1))
+        elif current_mode == GameModes.LEVEL:
+            return str(2 ** (int(block) - 1))
+        elif current_mode == GameModes.B:
+            return str(int(2 / int(block)))
+    elif new_mode == GameModes.B:
+        if current_mode == GameModes.ALPHA:
+            return str(2 ** int(convert_block_to_mode(block, GameModes.ALPHA, GameModes.LEVEL)))
+        elif current_mode == GameModes.LEVEL:
+            return str(2 ** int(block))
+        elif current_mode == GameModes.A:
+            return str(2 * int(block))
+    return block
+
+
+def change_mode(game_config):
+    """
+    Cambio de modo del juego
+    :param game_config: la configuración del juego
+    :return: None
+    """
+    modes = ("Alfabeto", "Nivel", "1024", "2048")
+    for i in range(len(modes)):
+        print("%d. %s" % (i + 1, modes[i]))
+    option = int(input("Escoja opción : "))
+    current_mode = game_config.get_mode()
+    new_mode = current_mode
+    if option == 1:
+        new_mode = GameModes.ALPHA
+    elif option == 2:
+        new_mode = GameModes.LEVEL
+    elif option == 3:
+        new_mode = GameModes.A
+    elif option == 4:
+        new_mode = GameModes.B
+    if current_mode != new_mode:
+        matrix = game_config.get_matrix()
+        game_config.set_mode(new_mode)
+        for row in range(len(matrix)):
+            for column in range(len(matrix[0])):
+                value = matrix[row][column]
+                if value not in ["*", " "]:
+                    new_value = convert_block_to_mode(value, current_mode, new_mode)
+                    matrix[row][column] = new_value
+    return None
 
 
 def save():
@@ -97,6 +186,12 @@ def save():
 
 
 def transform_operation(word):
+    """
+    Cambia la letra del movimiento por los enums definidos de las operaciones
+    Observaciones : la letra tiene que ser uno de estos "S", "B", "I", "D"
+    :param word: la letra de la operación
+    :return: los movimientos del juego definidos dentro de GameMovements
+    """
     operation_dict = {
         "S": GameMovements.UP,
         "B": GameMovements.DOWN,
@@ -113,7 +208,7 @@ def do_pie_operation(operation, game_config):
         game_operation = transform_operation(operation)
         matrix = game_config.get_matrix()
         do_matrix_operation(game_operation, game_config)
-        print_matrix(matrix, game_config.get_matrix_size())
+        print_matrix(game_config)
         input("Pulse cualquier tecla para mostrar inserción del nuevo bloque")
         insert_new_block(matrix, game_config.get_mode())
         # Incrementamos una unidad el número de movimientos
@@ -121,7 +216,7 @@ def do_pie_operation(operation, game_config):
     elif operation == "F":
         exit(0)
     elif operation == "M":
-        change_mode()
+        change_mode(game_config)
     elif operation == "G":
         save()
     elif operation == "Z":
@@ -199,6 +294,7 @@ def get_merged_word(word, operation, game_config):
 
 def merge(word, game_config, reverse=False):
     chars = list(word)
+    current_mode = game_config.get_mode()
     last_merged_index = -1
     last_word = ""
     index = 0
@@ -207,9 +303,14 @@ def merge(word, game_config, reverse=False):
         if last_word == value:
             if last_merged_index != index - 1:
                 chars[index - 1] = ""
-                next_value_ascii = ord(value) + 1
-                next_char = chr(next_value_ascii)
-                level = next_value_ascii - ord('@')
+                if current_mode == GameModes.ALPHA:
+                    next_value_ascii = ord(value) + 1
+                    next_char = chr(next_value_ascii)
+                    level = next_value_ascii - ord('@')
+                else:
+                    level = int(convert_block_to_mode(value, current_mode, GameModes.LEVEL))
+                    level += 1
+                    next_char = convert_block_to_mode(str(level), GameModes.LEVEL, current_mode)
                 game_config.set_record(game_config.get_record() + level)
                 chars[index] = next_char
                 last_merged_index = index
