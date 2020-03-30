@@ -181,8 +181,21 @@ def change_mode(game_config):
     return None
 
 
-def save():
-    pass
+def save(game_config):
+    matrix = game_config.get_matrix()
+    path = str (input ("Indique la ruta de guardado: "))
+    file = open (path, "a")
+    file.writelines([str(game_config.get_moves()), "\n", str(game_config.get_record())])
+    for row in range(len(matrix)):
+        file.write("\n")
+        for column in range(len(matrix[0])):
+            if matrix[row][column] == " ":
+                file.write(".")
+            else:
+                file.write(matrix[row][column])
+            column += 1
+        row += 1
+
 
 
 def transform_operation(word):
@@ -218,7 +231,7 @@ def do_pie_operation(operation, game_config):
     elif operation == "M":
         change_mode(game_config)
     elif operation == "G":
-        save()
+        save(game_config)
     elif operation == "Z":
         input("Pulse cualquier tecla para mostrar inserción del nuevo bloque")
         insert_new_block(game_config.get_matrix(), game_config.get_mode())
