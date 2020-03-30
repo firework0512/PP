@@ -183,12 +183,17 @@ def change_mode(game_config):
 
 def save(game_config):
     matrix = game_config.get_matrix()
+    current_mode = game_config.get_mode ()
     path = str (input ("Indique la ruta de guardado: "))
     file = open (path, "a")
     file.writelines([str(game_config.get_moves()), "\n", str(game_config.get_record())])
     for row in range(len(matrix)):
         file.write("\n")
         for column in range(len(matrix[0])):
+            value = matrix[row][column]
+            if value not in ["*", " "]:
+                new_value = convert_block_to_mode (value, current_mode, GameModes.ALPHA)
+                matrix[row][column] = new_value
             if matrix[row][column] == " ":
                 file.write(".")
             else:
