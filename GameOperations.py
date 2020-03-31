@@ -190,7 +190,7 @@ def transform_operation(word):
     Cambia la letra del movimiento por los enums definidos de las operaciones
     Observaciones : la letra tiene que ser uno de estos "S", "B", "I", "D"
     :param word: la letra de la operación
-    :return: los movimientos del juego definidos dentro de GameMovements
+    :return: los movimientos del juego definidos dentro de la clase enum GameMovements
     """
     operation_dict = {
         "S": GameMovements.UP,
@@ -225,14 +225,26 @@ def do_pie_operation(operation, game_config):
         return None
 
 
-def convert_row_to_string(matrix, row):
-    return "".join(matrix[row])
+def convert_row_to_list(matrix, row):
+    """
+    Convierte una determinada fila de la matriz a un string
+    :param matrix: la matriz del juego
+    :param row: el indice de la fila
+    :return: el contenido de la fila en string
+    """
+    return matrix[row]
 
 
-def convert_column_to_string(matrix, column):
-    column_word = ""
+def convert_column_to_list(matrix, column):
+    """
+    Convierte una determinada columna de la matriz a un string
+    :param matrix: la matriz del juego
+    :param column: el indice de la columna
+    :return: el contenido de la columna en string
+    """
+    column_word = []
     for row in range(len(matrix)):
-        column_word = column_word + matrix[row][column]
+        column_word.append(matrix[row][column])
     return column_word
 
 
@@ -240,69 +252,106 @@ def do_matrix_operation(operation, game_config):
     matrix = game_config.get_matrix()
     if operation in [GameMovements.DOWN, GameMovements.UP]:
         for i in range(len(matrix[0])):
-            column_word = convert_column_to_string(matrix, i)
-            column_word = get_merged_word(column_word, operation, game_config)
-            insert_column_word(matrix, column_word, i)
+            column_word_list = convert_column_to_list(matrix, i)
+            # print("old column word list :", column_word_list)
+            column_word_list = get_merged_word(column_word_list, game_config, operation)
+            # print("column word list :", column_word_list)
+            insert_column_word(matrix, column_word_list, i)
     elif operation in [GameMovements.LEFT, GameMovements.RIGHT]:
         for i in range(len(matrix)):
-            row_word = convert_row_to_string(matrix, i)
-            row_word = get_merged_word(row_word, operation, game_config)
-            insert_row_word(matrix, row_word, i)
+            row_word_list = convert_row_to_list(matrix, i)
+            row_word_list = get_merged_word(row_word_list, game_config, operation)
+            # print("row word list :", row_word_list)
+            insert_row_word(matrix, row_word_list, i)
     return None
 
 
-def insert_row_word(matrix, word, index):
-    matrix[index] = list(word)
+def insert_row_word(matrix, words, index):
+    matrix[index] = words
     return None
 
 
-def insert_column_word(matrix, word, index):
-    chars = list(word)
+def insert_column_word(matrix, words, index):
     for row in range(len(matrix)):
-        matrix[row][index] = chars[row]
+        matrix[row][index] = words[row]
     return None
 
 
-def get_merged_word(word, operation, game_config):
-    # obstacles_positions = ([pos for pos, char in enumerate(columnword) if char == "*"])
-    test = word.split("*")
-    replaced = list(map(lambda y: (y.count(" "), y.replace(" ", "")), test))
-    reversed_replaced = []
+def get_merged_word(words, game_config, operation):
+    obstacles_positions = ([pos for pos, char in enumerate(words) if char == "*"])
+    spaces = 0
+    size = len(obstacles_positions) + 1
+    segments = []
+
+    for i in range(size):
+        if i < len(obstacles_positions):
+            value = obstacles_positions[i]
+            segments.append(words[spaces:value])
+            spaces = value + 1
+        else:
+            segments.append(words[spaces:])
+
+    # print("segments :", segments)
+    replaced = list(map(lambda y: [y.count(" "), ([char for char in y if char != " "])], segments))
+    # print("replaced :", replaced)
     reverse = False
     if operation in [GameMovements.DOWN, GameMovements.RIGHT]:
-        # Need reverse operation
-        reversed_replaced = list(map(lambda y: y[1][::-1], replaced))
+        replaced = list(map(lambda y: [y[0], y[1][::-1]], replaced))
         reverse = True
-
     elif operation in [GameMovements.UP, GameMovements.LEFT]:
-        reversed_replaced = list(map(lambda y: y[1], replaced))
+        replaced = list(map(lambda y: [y[0], y[1]], replaced))
 
-    for i in range(len(reversed_replaced)):
-        value = reversed_replaced[i]
-        if len(value) > 1:
-            spaces = value.count(" ")
-            value = " " * spaces + merge(value, game_config, reverse)
-            reversed_replaced[i] = value
+    for i in range(len(replaced)):
+        segment = replaced[i][1]
+        segment_len = len(segment)
+        if segment_len > 1:
+            # print("segment :", segment)
+            segment_merged = merge(segment, game_config, reverse)
+            # print("segment merged :", segment_merged)
+            segment_merged_len = len(segment_merged)
+            spaces = segment_len - segment_merged_len
+            if not spaces == 0:
+                replaced[i][0] = spaces + replaced[i][0]
+            replaced[i][1] = segment_merged
 
     if reverse:
-        replaced = list(map(lambda y, z: " " * y[0] + " " * (len(y[1]) - len(z)) + z, replaced, reversed_replaced))
+        for spaces, value in replaced:
+            for i in range(spaces):
+                value.insert(0, " ")
     else:
-        replaced = list(map(lambda y, z: z + " " * (len(y[1]) - len(z)) + " " * y[0], replaced, reversed_replaced))
-    replaced = "*".join(replaced)
-    return replaced
+        for spaces, value in replaced:
+            for i in range(spaces):
+                value.append(" ")
+    # print("replaced final :", replaced)
+    final_list = []
+    for value in replaced:
+        if len(value[1]) > 0:
+            final_list += value[1]
+    # return list(map(lambda y: add_empty_spaces(y[1]), replaced))
+    for value in obstacles_positions:
+        final_list.insert(value, "*")
+    return final_list
 
 
-def merge(word, game_config, reverse=False):
-    chars = list(word)
+def add_empty_spaces(list):
+    if len(list) > 0:
+        return list
+    else:
+        return ["*"]
+
+
+def merge(words, game_config, reverse=False):
     current_mode = game_config.get_mode()
     last_merged_index = -1
     last_word = ""
     index = 0
     while True:
-        value = chars[index]
+        value = words[index]
         if last_word == value:
-            if last_merged_index != index - 1:
-                chars[index - 1] = ""
+            index_before = index - 1
+            if last_merged_index != index_before:
+                words.pop(index_before)
+                index -= 1
                 if current_mode == GameModes.ALPHA:
                     next_value_ascii = ord(value) + 1
                     next_char = chr(next_value_ascii)
@@ -312,22 +361,21 @@ def merge(word, game_config, reverse=False):
                     level += 1
                     next_char = convert_block_to_mode(str(level), GameModes.LEVEL, current_mode)
                 game_config.set_record(game_config.get_record() + level)
-                chars[index] = next_char
+                words[index] = next_char
                 last_merged_index = index
                 value = next_char
         last_word = value
         index += 1
-        if index == len(chars):
+        if index == len(words):
             break
-    result = "".join(chars)
     if reverse:
-        return result[::-1]
-    return result
+        return words[::-1]
+    return words
 
 
 def random_number(origin, bound, step=1):
     """
-    Obtener un número aleatorio entre el rango de [origin,bound)
+    Obtiene un número aleatorio entre el rango de [origin,bound)
     :param origin: el numero inicial inclusive
     :param bound: el numero final sin incluir
     :param step: los saltos de numero

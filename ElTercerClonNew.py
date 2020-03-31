@@ -1,6 +1,8 @@
 # El tercer clon
-# Se han considerado los estándares de nombre del Python en la realización de esta práctica :
+# Se han considerado los estándares de nomenclatura del Python en la realización de esta práctica :
 # https://www.python.org/dev/peps/pep-0008/
+# autores : Mario Ramos
+#           Weihua Weng
 
 
 from GameConfig import GameConfig
