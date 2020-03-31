@@ -201,8 +201,7 @@ def save(game_config):
         for column in range(len(matrix[0])):
             value = matrix[row][column]
             if value not in ["*", " "]:
-                new_value = convert_block_to_mode (value, current_mode, GameModes.ALPHA)
-                matrix[row][column] = new_value
+                value = convert_block_to_mode (value, current_mode, GameModes.ALPHA)
             # Comprobar si el bloque esta en blanco
             if value == " ":
                 file.write(".")
