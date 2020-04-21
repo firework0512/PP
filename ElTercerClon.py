@@ -18,7 +18,7 @@ print("‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐�
 game_config = GameConfig()
 
 # Pie
-pie = "[S]ubir, [B]ajar, [I]zda, [D]cha | [M]odo, [G]uardar, [F]in: "
+pie = "[S]ubir, [B]ajar, [I]zda, [D]cha | [G]uardar, [F]in: "
 
 
 # Funciones del menu principal

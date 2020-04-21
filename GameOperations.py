@@ -314,8 +314,6 @@ def do_pie_operation(operation, game_config):
         game_config.set_moves(game_config.get_moves() + 1)
     elif operation == "F":  # Salimos
         exit(0)
-    elif operation == "M":  # Cambiamos de modo
-        change_mode(game_config)
     elif operation == "G":  # Guardamos
         save(game_config)
     elif operation == "Z":  # Insertamos bloques
