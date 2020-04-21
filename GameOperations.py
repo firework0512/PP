@@ -508,12 +508,13 @@ def merge(words, game_config, reverse=False):
         if last_word == value:
             # Indice anterior
             index_before = index - 1
-            # Comprobamos que el índice anterior no sea la misma que el último guardado
-            # Y que no estemos en el modo Three! puesto que los bloques 1 y 2 no se fusionan
-
+            # Booleano que determina la condición de que podamos cambiar la letra
             need_change = True
+            # Si estamos en el modo Three! pues los bloques 1 y 2 no se fusionan
             if current_mode == GameModes.C and value in ["1", "2"]:
                 need_change = False
+            # Comprobamos que el índice anterior no sea la misma que el último guardado
+            # Y que podamos cambiar
             if need_change and last_merged_index != index_before:
                 # Eliminamos el bloque anterior repetido
                 words.pop(index_before)
@@ -540,17 +541,9 @@ def merge(words, game_config, reverse=False):
                     level += 1
                     # Convertimos el bloque en el de nivel siguiente
                     next_char = convert_block_to_mode(str(level), GameModes.LEVEL, current_mode)
-                # Incrementams la puntuación acorde con el nivel del bloque fusionado
-                game_config.set_record(game_config.get_record() + level)
-                # Actualizamos la lista con el nuevo bloque
-                words[index] = next_char
-                # Actualizamos la última posición del bloque fusionado
-                last_merged_index = index
-                # Actualizamos la variable temporal
-                value = next_char
         elif last_word != value:
             # Fusionamos solo 1 y 2 en modo Three!
-            if current_mode == GameModes.C and last_word in ["1", "2"] and value in ["1", "2"] and last_word != value:
+            if current_mode == GameModes.C and last_word in ["1", "2"] and value in ["1", "2"]:
                 index_before = index - 1
                 # Comprobamos que el índice anterior no sea la misma que el último guardado
                 if last_merged_index != index_before:
