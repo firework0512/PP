@@ -113,7 +113,7 @@ def print_matrix(game_config):
     hypens = 1
     if current_mode == GameModes.LEVEL:
         hypens = 2
-    elif current_mode in [GameModes.A, GameModes.B]:
+    elif current_mode in [GameModes.A, GameModes.B, GameModes.C]:
         hypens = 4
     # Bucle que recorre por filas
     for fila in range(len(matrix)):
