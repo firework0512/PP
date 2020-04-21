@@ -541,6 +541,14 @@ def merge(words, game_config, reverse=False):
                     level += 1
                     # Convertimos el bloque en el de nivel siguiente
                     next_char = convert_block_to_mode(str(level), GameModes.LEVEL, current_mode)
+                    # Incrementams la puntuación acorde con el nivel del bloque fusionado
+                    game_config.set_record(game_config.get_record() + level)
+                    # Actualizamos la lista con el nuevo bloque
+                    words[index] = next_char
+                    # Actualizamos la última posición del bloque fusionado
+                    last_merged_index = index
+                    # Actualizamos la variable temporal
+                    value = next_char
         elif last_word != value:
             # Fusionamos solo 1 y 2 en modo Three!
             if current_mode == GameModes.C and last_word in ["1", "2"] and value in ["1", "2"]:
