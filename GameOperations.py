@@ -49,8 +49,8 @@ def insert_new_block(matrix, game_mode):
     :param game_mode: el modo del juego actual
     :return: None
     """
-    # Probabilidad y niveles (75% nivel 1, 25% nivel 2)
-    probability = (1, 1, 1, 2)
+    # Probabilidad y niveles (50% nivel 1, 50% nivel 2)
+    probability = (1, 1, 2, 2)
     # Nivel elegido aleatoriamente
     level = probability[random_number(0, len(probability))]
     # Buscamos una posición del tablero de forma aleatoria

@@ -10,8 +10,8 @@ class GameConfig:
         """
         # La matriz del juego
         self.__matrix = []
-        # El modo del juego, por defecto en alfabético
-        self.__game_mode = GameModes.ALPHA
+        # El modo del juego, por defecto el Three!
+        self.__game_mode = GameModes.C
         # El tamaño de la matriz del juego, debe ser cuadrada
         self.__matrix_size = 0
         # La puntuación del juego
@@ -127,6 +127,7 @@ class GameModes(Enum):
     LEVEL = 2  # Nivel
     A = 3  # 1024
     B = 4  # 2048
+    C = 3  # THREE!
 
 
 # Los distintos movimientos del juego
