@@ -510,7 +510,11 @@ def merge(words, game_config, reverse=False):
             index_before = index - 1
             # Comprobamos que el índice anterior no sea la misma que el último guardado
             # Y que no estemos en el modo Three! puesto que los bloques 1 y 2 no se fusionan
-            if current_mode != GameModes.C and value not in ["1", "2"] and last_merged_index != index_before:
+
+            need_change = True
+            if current_mode == GameModes.C and value in ["1", "2"]:
+                need_change = False
+            if need_change and last_merged_index != index_before:
                 # Eliminamos el bloque anterior repetido
                 words.pop(index_before)
                 # Decrementamos el indice en una unidad
