@@ -56,7 +56,7 @@ def insert_new_block(matrix, game_mode):
     # Buscamos una posición del tablero de forma aleatoria
     position = random_empty_space_position(matrix)
     # Insertamos el bloque
-    matrix[position[0]][position[1]] = convert_block_to_mode(str(level), GameModes.LEVEL, game_mode)
+    matrix[position[0]][position[1]] = str(level)
     return None
 
 
@@ -509,7 +509,8 @@ def merge(words, game_config, reverse=False):
             # Indice anterior
             index_before = index - 1
             # Comprobamos que el índice anterior no sea la misma que el último guardado
-            if last_merged_index != index_before:
+            # Y que no estemos en el modo Three! puesto que los bloques 1 y 2 no se fusionan
+            if current_mode != GameModes.C and value not in ["1", "2"] and last_merged_index != index_before:
                 # Eliminamos el bloque anterior repetido
                 words.pop(index_before)
                 # Decrementamos el indice en una unidad
@@ -522,6 +523,12 @@ def merge(words, game_config, reverse=False):
                     next_char = chr(next_value_ascii)
                     # Obtenemos el nivel del bloque fusionado
                     level = next_value_ascii - ord('@')
+                # Modo Three!
+                elif current_mode == GameModes.C:
+                    level = int(value)
+                    # Nuevo nivel = 2* nivel antiguo
+                    level *= 2
+                    next_char = str(level)
                 else:  # Comprobamos que estamos en otros modos
                     # Obtenemos el bloque en modo nivel
                     level = int(convert_block_to_mode(value, current_mode, GameModes.LEVEL))
@@ -537,6 +544,27 @@ def merge(words, game_config, reverse=False):
                 last_merged_index = index
                 # Actualizamos la variable temporal
                 value = next_char
+        elif last_word != value:
+            # Fusionamos solo 1 y 2 en modo Three!
+            if current_mode == GameModes.C and last_word in ["1", "2"] and value in ["1", "2"] and last_word != value:
+                index_before = index - 1
+                # Comprobamos que el índice anterior no sea la misma que el último guardado
+                if last_merged_index != index_before:
+                    # Eliminamos el bloque anterior(puede ser un 1 o un 2)
+                    words.pop(index_before)
+                    # Decrementamos el indice en una unidad
+                    index -= 1
+                    # Próximo nivel es un 3
+                    level = 3
+                    next_char = str(level)
+                    # Incrementams la puntuación acorde con el nivel del bloque fusionado
+                    game_config.set_record(game_config.get_record() + level)
+                    # Actualizamos la lista con el nuevo bloque
+                    words[index] = next_char
+                    # Actualizamos la última posición del bloque fusionado
+                    last_merged_index = index
+                    # Actualizamos la variable temporal
+                    value = next_char
         # Actualizamos el último bloque guardado
         last_word = value
         # Incrementamos el índice
