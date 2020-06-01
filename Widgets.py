@@ -71,7 +71,6 @@ class ClonGridSizer(wx.GridSizer):
         self.SetRows(self.game_config.get_matrix_size())
         self.SetCols(self.game_config.get_matrix_size())
         matrix = self.game_config.get_matrix()
-        print_matrix(self.game_config)
         current_mode = self.game_config.get_mode()
         prefix = self._get_correct_image_prefix(current_mode)
         for row in range(len(matrix)):

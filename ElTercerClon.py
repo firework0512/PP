@@ -74,13 +74,11 @@ def do_action(matrix, is_first_entry=True):
     return None
 
 
-def read_file():
+def read_file(path):
     """
     Método que lee un fichero y luego empieza la partida del juego
     :return: None
     """
-    # Pregunta por pantalla la ruta de lectura
-    path = str(input("Indique la ruta de guardado: "))
     # Contenido de la lectura
     txt = []
     # Inserta lineas del fichero en la lista

@@ -236,17 +236,46 @@ def change_mode(option, game_config):
     return None
 
 
-def save(game_config):
+def read_file(path, game_config):
+    """
+    Método que lee un fichero y carga la partida guardada
+    :return: None
+    """
+    # Contenido de la lectura
+    txt = []
+    # Inserta lineas del fichero en la lista del contenido
+    with open(path) as file:
+        for line in file:
+            txt.append(line)
+    # Actualizamos los movimientos y la puntuación almacenada en el fichero
+    game_config.set_moves(int(txt[0]))
+    game_config.set_record(int(txt[1]))
+    # Inicio la matriz
+    game_config.set_matrix_size(int(len(txt[2]) - 1))
+    # Carga la matriz
+    matrix = game_config.get_matrix()
+    # Inserta caracteres en la matriz
+    for row in range(len(txt[2]) - 1):
+        line = txt[row + 2]
+        for column in range(len(txt[2]) - 1):
+            if not line[column] == ".":
+                matrix[row][column] = line[column]
+            else:
+                matrix[row][column] = " "
+    game_config.set_matrix(matrix)
+    return None
+
+
+def save(path, game_config):
     """
     Guardado de la partida
+    :param path: la ruta del archivo de guardado
     :param game_config: la configuración del juego
     :return: None
     """
     # Definimos variables temporales para utilizarlas posteriormente
     matrix = game_config.get_matrix()
     current_mode = game_config.get_mode()
-    # Pregunta por pantalla la ruta de guardado
-    path = str(input("Indique la ruta de guardado: "))
     # Si existe archivo le eliminamos
     if os.path.isfile(path):
         os.remove(path)
