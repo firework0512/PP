@@ -54,7 +54,9 @@ class NewGameDialog(wx.Dialog):
         # end wxGlade
 
 
+# Grid sizer del Clon 3
 class ClonGridSizer(wx.GridSizer):
+    # Prefijos de las imágenes
     ALPHABETIC_IMAGES_PREFIX = "0-"
     LEVEL_IMAGES_PREFIX = "1-"
     A_1024_IMAGES_PREFIX = "2-"
@@ -64,31 +66,54 @@ class ClonGridSizer(wx.GridSizer):
         super(ClonGridSizer, self).__init__(3, 3, 0, 0)
         self.game_config = game_config
         self.parent = parent
+        # Actualizamos el grid
         self.update_grid()
 
     def update_grid(self):
+        """
+        Método que actualiza el grid
+        :return: None
+        """
+        # Limpiamos el contenido del grid previo
         self.Clear(True)
+        # Actualizamos el número de columnas y filas
         self.SetRows(self.game_config.get_matrix_size())
         self.SetCols(self.game_config.get_matrix_size())
+        # Matriz del juego
         matrix = self.game_config.get_matrix()
+        # Modo actual
         current_mode = self.game_config.get_mode()
+        # Prefijo del archivo
         prefix = self._get_correct_image_prefix(current_mode)
+        # Bucle que recorre por filas y columnas
         for row in range(len(matrix)):
             for column in range(len(matrix[0])):
+                # Valor de una posición específica de la matriz
                 value = matrix[row][column]
+                # Nombre del archivo
                 file_name = "Bloque.png"
+                # Comprobamos que no sea bloque ni vacío
                 if value not in ["*", " "]:
+                    # Convertimos el valor al modo nivel
                     value = convert_block_to_mode(value, current_mode, GameModes.LEVEL)
+                    # Concatenamos el prefijo + valor + .png obteniendo el nombre del archivo
                     file_name = prefix + value + ".png"
-                elif value == "*":
+                elif value == "*":  # Es un bloque
                     file_name = "Bloque.png"
-                elif value == " ":
+                elif value == " ":  # Está vacia
                     file_name = "Vacio.png"
+                # Añadimos al grid la imagen
                 self.Add(wx.StaticBitmap(self.parent, wx.ID_ANY, wx.Bitmap("Images/" + file_name, wx.BITMAP_TYPE_ANY)), 0, wx.ALIGN_CENTER, 0)
+        # Actualizamos el grid
         self.Layout()
         return None
 
     def _get_correct_image_prefix(self, mode):
+        """
+        Método que obtiene los prefijos correctos según el tipo de modo
+        :param mode: El modo actual del juego
+        :return: el prefijo del archivo
+        """
         if mode == GameModes.ALPHA:
             return self.ALPHABETIC_IMAGES_PREFIX
         elif mode == GameModes.LEVEL:

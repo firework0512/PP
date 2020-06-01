@@ -329,9 +329,6 @@ def do_pie_operation(operation, game_config):
         matrix = game_config.get_matrix()
         # Realizamos los movimientos
         do_matrix_operation(game_operation, game_config)
-        # Imprimimos la matriz
-        print_matrix(game_config)
-        input("Pulse cualquier tecla para mostrar inserción del nuevo bloque")
         # Insertamos un nuevo bloque
         insert_new_block(matrix, game_config.get_mode())
         # Incrementamos una unidad el número de movimientos
