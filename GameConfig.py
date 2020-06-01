@@ -51,9 +51,8 @@ class GameConfig:
         :return: None
         """
         self.__matrix_size = new_size
-        # Inicializamos la matriz si está vacia
-        if len(self.__matrix) == 0:
-            self.set_matrix([[" "] * self.__matrix_size for i in range(self.__matrix_size)])
+        # Inicializamos la matriz
+        self.set_matrix([[" "] * self.__matrix_size for i in range(self.__matrix_size)])
         return None
 
     def get_obstacles(self):

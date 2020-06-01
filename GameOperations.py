@@ -200,29 +200,24 @@ def convert_block_to_mode(block, current_mode, new_mode):
     return block
 
 
-def change_mode(game_config):
+def change_mode(option, game_config):
     """
     Cambio de modo del juego
+    :param option: el índice de la nueva opción seleccionada por el usuario
     :param game_config: la configuración del juego
     :return: None
     """
-    modes = ("Alfabeto", "Nivel", "1024", "2048")
-    # Impresión de los modos
-    for i in range(len(modes)):
-        print("%d. %s" % (i + 1, modes[i]))
-    # Opción elegida
-    option = int(input("Escoja opción : "))
     # Modo actual
     current_mode = game_config.get_mode()
     # Nuevo modo
     new_mode = current_mode
-    if option == 1:
+    if option == 0:
         new_mode = GameModes.ALPHA
-    elif option == 2:
+    elif option == 1:
         new_mode = GameModes.LEVEL
-    elif option == 3:
+    elif option == 2:
         new_mode = GameModes.A
-    elif option == 4:
+    elif option == 3:
         new_mode = GameModes.B
     # Comprobamos que haya elegido un modo diferente
     if current_mode != new_mode:
@@ -319,7 +314,6 @@ def do_pie_operation(operation, game_config):
     elif operation == "G":  # Guardamos
         save(game_config)
     elif operation == "Z":  # Insertamos bloques
-        input("Pulse cualquier tecla para mostrar inserción del nuevo bloque")
         insert_new_block(game_config.get_matrix(), game_config.get_mode())
         return None
 
