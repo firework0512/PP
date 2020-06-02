@@ -186,7 +186,7 @@ def convert_block_to_mode(block, current_mode, new_mode):
             return str(2 ** (int(block) - 1))
         elif current_mode == GameModes.B:  # Modo actual = Modo 2048
             # Resultado del caracter obtenido por nivel del bloque /2
-            return str(int(2 / int(block)))
+            return str(int(int(block) / 2))
     elif new_mode == GameModes.B:  # Nuevo modo = Modo 2048
         if current_mode == GameModes.ALPHA:  # Modo actual = Modo alfabético
             # Resultado del caracter obtenido por 2^resultado convirtiendo el bloque al modo nivel
