@@ -42,6 +42,7 @@ class ClonFrame(wx.Frame):
         self.mode_radio_box = wx.RadioBox(self.left_panel, wx.ID_ANY, "Modo",
                                           choices=[u"Alfabético", "Level", "1024", "2048"], majorDimension=1,
                                           style=wx.RA_SPECIFY_COLS)
+        self.thanos = wx.Button(self.left_panel, wx.ID_ANY, "Thanos")
         self.right_panel = wx.Panel(self.splitter_window, wx.ID_ANY)
 
         self.__set_properties()
@@ -52,6 +53,7 @@ class ClonFrame(wx.Frame):
         self.Bind(wx.EVT_TOOL, self._save_game, id=3)
         self.Bind(wx.EVT_RADIOBOX, self._game_mode_changed, self.mode_radio_box)
         self.Bind(wx.EVT_CHAR_HOOK, self._on_key_clicked)
+        self.Bind(wx.EVT_BUTTON, self.on_thanos_clicked, self.thanos)
         self.SetFocus()
         # end wxGlade
 
@@ -77,7 +79,7 @@ class ClonFrame(wx.Frame):
         movements_sizer = wx.BoxSizer(wx.HORIZONTAL)
         vertical_box_sizer.Add((20, 20), 0, 0, 0)
         vertical_box_sizer.Add(self.mode_radio_box, 0, 0, 0)
-        vertical_box_sizer.Add((20, 20), 2, wx.EXPAND, 0)
+        vertical_box_sizer.Add(self.thanos, 2, wx.EXPAND, 0)
         movements_text = wx.StaticText(self.left_panel, wx.ID_ANY, "Movimientos : ", style=wx.ALIGN_LEFT)
         movements_sizer.Add(movements_text, 0, wx.ALIGN_CENTER, 0)
         self.movements_count_text = wx.StaticText(self.left_panel, wx.ID_ANY, str(self.game_config.get_moves()))
@@ -245,6 +247,11 @@ class ClonFrame(wx.Frame):
                     # Mostramos el diálogo de error
                     self._show_prohibited_dialog(title="Ahhhh!!!", content="Has perdido!")
                     return
+        event.Skip()
+        return None
+
+    def on_thanos_clicked(self, event):
+        print("Event handler 'on_thanos_clicked' not implemented!")
         event.Skip()
         return None
 
