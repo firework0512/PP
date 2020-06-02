@@ -5,17 +5,19 @@
 #           Weihua Weng
 # Github link de este proyecto : https://github.com/firework0512/PP
 # Branch gui-version
+import os
 
 import wx
 
-from GameConfig import GameConfig, GameModes
-from GameOperations import create_random_obstacles, print_matrix, do_pie_operation, change_mode, save, read_file, is_possible_move
+from GameConfig import GameConfig
+from GameOperations import create_random_obstacles, do_pie_operation, change_mode, save, read_file, is_possible_move
 from Widgets import NewGameDialog, ClonGridSizer
 
 
 class ClonFrame(wx.Frame):
     # Solo lo guardamos en formato .txt
-    WILDCARD = "Text file (*.txt)|*.txt|"
+    WILDCARD = "Text file (*.txt)|*.txt|" \
+               "All files (*.*)|*.*"
 
     def __init__(self, game_config: GameConfig):
         # begin wxGlade: ClonFrame.__init__
@@ -29,10 +31,10 @@ class ClonFrame(wx.Frame):
         self.toolbar.AddTool(1, "new_game", wx.Bitmap("Images/new.png", wx.BITMAP_TYPE_ANY),
                              wx.NullBitmap, wx.ITEM_NORMAL, "", "Creates a new game")
         self.toolbar.AddTool(2, "open_file", wx.Bitmap("Images/open.png", wx.BITMAP_TYPE_ANY),
-                             wx.Bitmap("Images/open_white.png", wx.BITMAP_TYPE_ANY),
+                             wx.NullBitmap,
                              wx.ITEM_NORMAL, "", "Opens a saved game")
         self.toolbar.AddTool(3, "save_game", wx.Bitmap("Images/save.png", wx.BITMAP_TYPE_ANY),
-                             wx.Bitmap("Images/save_white.png", wx.BITMAP_TYPE_ANY),
+                             wx.NullBitmap,
                              wx.ITEM_NORMAL, "", "Saves the current game.")
         # Tool Bar end
         self.splitter_window = wx.SplitterWindow(self, wx.ID_ANY)
@@ -56,7 +58,7 @@ class ClonFrame(wx.Frame):
     def __set_properties(self):
         # begin wxGlade: ClonFrame.__set_properties
         self.SetTitle("CLON3-GUI")
-        self.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOWFRAME))
+        self.SetBackgroundColour("white")
         self.toolbar.Realize()
         self.mode_radio_box.SetSelection(0)
         self.splitter_window.SetMinimumPaneSize(100)
@@ -251,8 +253,10 @@ class ClonFrame(wx.Frame):
         Creamos un diálogo de información y lo mostramos
         :return:
         """
-        wx.MessageBox("Las teclas W,A,S,D corresponden con desplazamientos hacia arriba, izquierda, abajo y derecha respectivamente",
-                      "Sobre los controles", wx.OK | wx.ICON_ERROR)
+        wx.MessageBox(
+            "Las teclas W,A,S,D corresponden con desplazamientos hacia arriba, izquierda, abajo y derecha respectivamente. Debe usted hacer click "
+            "en una posición de la ventana primero",
+            "Sobre los controles", wx.OK | wx.ICON_WARNING)
         return None
 
     def _show_prohibited_dialog(self, title="", content=""):

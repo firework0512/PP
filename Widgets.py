@@ -1,3 +1,5 @@
+import os
+
 import wx
 
 from GameConfig import GameConfig, GameModes
@@ -103,7 +105,11 @@ class ClonGridSizer(wx.GridSizer):
                 elif value == " ":  # Está vacia
                     file_name = "Vacio.png"
                 # Añadimos al grid la imagen
-                self.Add(wx.StaticBitmap(self.parent, wx.ID_ANY, wx.Bitmap("Images/" + file_name, wx.BITMAP_TYPE_ANY)), 0, wx.ALIGN_CENTER, 0)
+                self.Add(wx.StaticBitmap(self.parent, wx.ID_ANY,
+                                         wx.Bitmap(os.path.abspath(os.path.join(__file__, os.pardir)) + os.sep + "Images" + os.sep + file_name,
+                                                   wx.BITMAP_TYPE_ANY)),
+                         0,
+                         wx.ALIGN_CENTER, 0)
         # Actualizamos el grid
         self.Layout()
         return None
