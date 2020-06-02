@@ -42,6 +42,26 @@ def random_empty_space_position(matrix):
     return row, column
 
 
+def random_block_position(matrix):
+    """
+    Obtención de una posición de bloques
+    :param matrix: la matriz del juego
+    :return: (fila, columna) posición del espacio en blanco
+    """
+    # Obtenemos un diccionario con el posicionamiento de los espacios en blanco
+    # En formato {fila : [columnas]}
+    matrix_blocks = get_blocks(matrix)
+    # Filtramos la lista anterior usando las columnas y comprobando que haya al menos un bloque
+    filtered = {k: v for k, v in matrix_blocks.items() if len(v) > 0}
+    # Eligimos una fila aleatoria que tenga bloques
+    row, columns = random.choice(list(filtered.items()))
+    # Generamos un número aleatorio
+    _random_number = random_number(0, len(columns))
+    # Elegimos un bloque aleatorio
+    column = columns[_random_number]
+    return row, column
+
+
 def insert_new_block(matrix, game_mode):
     """
     Insertamos un nuevo bloque de nivel 1 (probabilidad de 75%) y nivel 2 (probabilidad de 25%) aleatorio
@@ -60,6 +80,16 @@ def insert_new_block(matrix, game_mode):
     return None
 
 
+def has_at_least_one_block(matrix):
+    """
+    Método que comprueba que hay al menos un bloque en el tablero
+    :param matrix: la matriz del juego (Tablero)
+    :return: True si hay bloque/s, False si no.
+    """
+    filtered = {k: v for k, v in get_blocks(matrix).items() if len(v) > 0}
+    return len(filtered) > 0
+
+
 def is_possible_move(matrix):
     """
     Método que comprueba si hay al menos un espacio en blanco en el tablero del juego
@@ -69,6 +99,31 @@ def is_possible_move(matrix):
     # Filtramos la lista de columnas y comprobamos que haya al menos un espacio
     filtered = {k: v for k, v in get_matrix_empty_spaces(matrix).items() if len(v) > 0}
     return len(filtered) > 0
+
+
+def get_blocks(matrix):
+    """
+    Obtiene un diccionario de formato {fila : [columna]} de bloques del tablero
+    :param matrix: la matriz del juego (Tablero)
+    :return: el diccionario con los bloques
+    """
+    # Creamos un diccionario
+    matrix_blocks = {}
+    # Bucle que recorre por filas
+    for fila in range(len(matrix)):
+        # Creamos una lista con las posiciones de los bloques
+        blocks = []
+        # Bucle que recorre por columnas
+        for columna in range(len(matrix[0])):
+            # Valor del tablero
+            value = matrix[fila][columna]
+            # Comprobamos que no sea espacio ni obstáculo
+            if value not in [" ", "*"]:
+                # Añadimos la columna a la lista
+                blocks.append(columna)
+        # Escribimos en el diccionario
+        matrix_blocks[fila] = blocks
+    return matrix_blocks
 
 
 def get_matrix_empty_spaces(matrix):

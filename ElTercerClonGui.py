@@ -10,7 +10,8 @@ import os
 import wx
 
 from GameConfig import GameConfig
-from GameOperations import create_random_obstacles, do_pie_operation, change_mode, save, read_file, is_possible_move
+from GameOperations import create_random_obstacles, do_pie_operation, change_mode, save, read_file, is_possible_move, random_block_position, \
+    has_at_least_one_block
 from Widgets import NewGameDialog, ClonGridSizer
 
 
@@ -251,8 +252,24 @@ class ClonFrame(wx.Frame):
         return None
 
     def on_thanos_clicked(self, event):
-        print("Event handler 'on_thanos_clicked' not implemented!")
-        event.Skip()
+        """
+        Callback que se ejecuta cuando el usuario hace click en el botón Thanos
+        :param event: evento
+        :return: None
+        """
+        # La matriz del juego
+        matrix = self.game_config.get_matrix()
+        # Comprobamos que haya un bloque al menos en el tablero
+        if has_at_least_one_block(matrix):
+            # Obtenemos una posición aleatoria de un bloque
+            positions = random_block_position(self.game_config.get_matrix())
+            # Dejamos el bloque elegido aleatoriamente en blanco
+            matrix[positions[0]][positions[1]] = " "
+            # Actualizamos el grid y el panel derecho
+            self._refresh_right_panel()
+        else:
+            # Mostramos un diálogo si no hay bloques
+            self._show_prohibited_dialog("Error", "No hay bloques en el tablero!!!")
         return None
 
     def _show_info_dialog(self):
