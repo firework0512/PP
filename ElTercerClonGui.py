@@ -4,7 +4,7 @@
 # autores : Mario Ramos Diez
 #           Weihua Weng
 # Github link de este proyecto : https://github.com/firework0512/PP
-# Branch gui-version
+# Branch defensa2 (Thanos)
 import os
 
 import wx
@@ -80,7 +80,7 @@ class ClonFrame(wx.Frame):
         movements_sizer = wx.BoxSizer(wx.HORIZONTAL)
         vertical_box_sizer.Add((20, 20), 0, 0, 0)
         vertical_box_sizer.Add(self.mode_radio_box, 0, 0, 0)
-        vertical_box_sizer.Add(self.thanos, 2, wx.EXPAND, 0)
+        vertical_box_sizer.Add(self.thanos, 0, wx.EXPAND, 0)
         movements_text = wx.StaticText(self.left_panel, wx.ID_ANY, "Movimientos : ", style=wx.ALIGN_LEFT)
         movements_sizer.Add(movements_text, 0, wx.ALIGN_CENTER, 0)
         self.movements_count_text = wx.StaticText(self.left_panel, wx.ID_ANY, str(self.game_config.get_moves()))
